@@ -7,10 +7,10 @@ pd.set_option('display.unicode.east_asian_width', True)
 pd.set_option('display.max_columns', 19)
 pd.set_option('display.width', 210)
 
-def range_stretagy_01(year, ticker, k=None, ma_k=None):
+def range_stretagy_01(date, ticker, k=None, ma_k=None):
     try:
         df = pybithumb.get_ohlcv(ticker)
-        df = df[str(year)]
+        df = df[date]
 
         df['ma'] = df['close'].rolling(window=ma_k).mean().shift(1)
         df['bull'] = df['open'] > df['ma']
@@ -25,10 +25,9 @@ def range_stretagy_01(year, ticker, k=None, ma_k=None):
                              1)
         df['hpr'] = df['ror'].cumprod()
 
-        #MDD
+        # MDD
         df['dd'] = (df['hpr'].cummax() - df['hpr']) / df['hpr'].cummax() * 100
         return df['hpr'][-2], df['dd'].max()
-
     except:
         pass
 
